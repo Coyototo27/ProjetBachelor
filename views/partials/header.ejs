@@ -1,0 +1,40 @@
+<!-- header.ejs -->
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/"><img src="/navbar/logo.png" alt="Logo" class="logo" /></a>
+            <% if (user && user.admin) { %>
+                <a href="#">Liste utilisateurs</a>
+                <a href="/list-figure">Liste figure</a>
+                <a href="/trickform">Proposer figure</a>
+                <% } else if (user) { %>
+                    <a href="#">Jouer</a>
+                    <a href="#">Mes stats</a>
+                    <a href="/trickform">Proposer figure</a>
+                    <% } else { %>
+                        <a href="#">Jouer</a>
+                        <% } %>
+        </div>
+        <div class="navbar-right">
+            <% if (user && user.admin) { %>
+                <form action="/logout" method="post">
+                    <p> <a href="/list-proposition"><img class="svg-msg" src="/navbar/envelope.svg" alt="Messagerie figure"></a>
+                        Bonjour Admin <%= user.prenom %>
+                            <button type="submit" class="custom-btndeco">Déconnexion</button></p>
+                </form>
+                <% } else if (user) { %>
+                    <form action="/logout" method="post">
+
+                        <p>Bonjour <%= user.prenom %>
+                                <button type="submit" class="custom-btndeco">Déconnexion</button></p>
+                    </form>
+                    <% } else { %>
+                        <p>Bienvenue visiteur !
+                            <a href="/login">Connexion</a>
+                            <a href="/register">S'inscrire</a>
+                        </p>
+                        <% } %>
+
+        </div>
+    </nav>
+</header>

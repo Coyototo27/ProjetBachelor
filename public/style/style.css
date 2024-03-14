@@ -1,0 +1,124 @@
+/* style.css */
+html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+}
+
+.navbar {
+    background-color: #190482;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 25px;
+    font-weight: bold;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #C2D9FF;
+    margin-left: 25px;
+
+}
+
+.navbar a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+h1 {
+    text-align: center;
+    color: #7752FE;
+    padding-top: 15px;
+}
+
+h2 {
+    color: #190482;
+}
+
+.sousTitre {
+    text-align: center;
+    padding-top: 15px;
+}
+
+.custom-btn {
+    background-color: #190482;
+    width: 30%;
+}
+
+.custom-btndeco {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #C2D9FF;
+    font: inherit;
+    padding: 0;
+    margin-left: 25px;
+}
+
+.custom-card {
+    background-color: #E8E4FE;
+}
+
+.logo {
+    height: 50px;
+}
+
+.container-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    width: 100%;
+}
+
+.container-2 {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    align-items: center;
+}
+
+.text {
+    flex: 1;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.image {
+    flex: 1;
+}
+
+.image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.svg-msg {
+    margin-right: 25px;
+    width: 25px;
+}
+
+.bi-trash {
+    color: red;
+}
+
+.bi-pencil{
+    color: blue;
+}
+
+
+
+.table-striped th,
+.table-striped td {
+    border-right: 1px solid #dee2e6;
+}
+
+.table-striped th:last-child,
+.table-striped td:last-child {
+    border-right: none;
+}
+
+th{
+    text-align: center;
+}
+

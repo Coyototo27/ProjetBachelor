@@ -1,0 +1,98 @@
+<!-- views/home.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="style/style.css">
+
+</head>
+
+<body>
+    <%- include('./partials/header.ejs') %>
+        <h1>Générer une figure aléatoirement</h1>
+        <div class="container mt-5 col-3">
+            <form action="/play" method="post">
+                <div class="form-group">
+                    <label class="text-center">Sélectionner une difficulté</label>
+                    <select class="form-control" id="difficulte" name="difficulte" required>
+                        <% levels.forEach(level=> { %>
+                            <option value="<%= level.id %>">
+                                <%= level.nom %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary custom-btn">Lancer</button>
+                </div>
+            </form>
+        </div>
+        <% if (trick && user) { %>
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="container mt-3 col-md-6">
+
+                        <div class="card pt-3 mt-3">
+                            <img class="card-img-top mx-auto"
+                                src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>" alt="Image de la figure"
+                                style="width: 500px;">
+                            <div class="card-body">
+                                <h3 class="card-title text-center">
+                                    <%= trick.nom %>
+                                </h3>
+                                <h5 class="card-title text-center">
+                                    <%= trick['level.nom'] %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= trick.description %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <form action="/list-proposition/detail/<%= trick.id %>/failure" method="post">
+                          <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
+                          <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
+                          <input type="hidden" name="trickId" value="<%= trick.id %>">
+                          <button type="submit" class="btn btn-danger mr-3">Echec</button>
+                        </form>
+                        <form action="/list-proposition/detail/<%= trick.id %>/success" method="post">
+                          <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
+                          <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
+                          <input type="hidden" name="trickId" value="<%= trick._id %>">
+                          <button type="submit" class="btn btn-success">Réussi</button>
+                        </form>
+                      </div>
+                </div>
+            </div>
+            <% } else if (trick) { %>
+                <div class="container mt-3 col-4">
+
+                    <div class="card pt-3 mt-3">
+                        <img class="card-img-top mx-auto"
+                            src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>" alt="Image de la figure"
+                            style="width: 500px;">
+                        <div class="card-body">
+                            <h3 class="card-title text-center">
+                                <%= trick.nom %>
+                            </h3>
+                            <h5 class="card-title text-center">
+                                <%= trick['level.nom'] %>
+                            </h5>
+                            <p class="card-text">
+                                <%= trick.description %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+</body>
+
+</html>

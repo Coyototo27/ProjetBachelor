@@ -17,6 +17,10 @@ router.get('/', verifyToken, (req, res) => {
   res.render('home', { user: req.user });
 });
 
+router.get('/play', verifyToken, levelController.getPlay);
+
+router.post('/play', verifyToken, trickController.trickRandom);
+
 
 router.get('/login', (req, res) => {
   res.render('login', { user: req.user });

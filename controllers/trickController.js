@@ -1,6 +1,7 @@
 const Level = require('../models/level');
 const Trick = require('../models/trick');
 const User = require('../models/user');
+const Sequelize = require('sequelize');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
@@ -183,7 +184,21 @@ const trickController = {
         }
     },
 
+    trickRandom: async (req, res) => {
+        try {
+            const level = await Level.findAll({ raw: true });
+            const trick = await Trick.findOne({ where: { id_level: req.body.difficulte }, order: Sequelize.literal('rand()'), limit: 1, include: [Level], raw: true });
+            if (trick.length === 0) {
+                return res.status(404).send("Aucun trick disponible pour cette difficulté.");
+            }
+            console.log(trick);
+            res.status(200).render('play', { user: req.user, trick: trick, levels: level });
 
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Erreur lors de la sélection du trick aléatoire.');
+        }
+    },
 };
 
 module.exports = trickController;

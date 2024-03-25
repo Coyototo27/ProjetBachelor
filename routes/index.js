@@ -31,7 +31,7 @@ router.get('/register', (req, res) => {
 router.post('/register', [
   body('nom').notEmpty().withMessage('Le nom est requis').isLength({ max: 50 }).withMessage('Le nom ne doit pas dépasser 50 caractères'),
   body('prenom').notEmpty().withMessage('Le prénom est requis').isLength({ max: 50 }).withMessage('Le prénom ne doit pas dépasser 50 caractères'),
-  body('email').trim().isEmail().withMessage('Adresse e-mail invalide').normalizeEmail(),
+  body('email').trim().isEmail().withMessage('Adresse e-mail invalide'),
   body('password')
     .isLength({ min: 8 }).withMessage('Le mot de passe doit contenir au moins 8 caractères')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/).withMessage('Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre'),
@@ -57,9 +57,26 @@ router.get('/list-proposition', verifyToken,verifyAdmin, trickController.getAllT
 
 router.get('/list-proposition/detail/:trickId',verifyToken,verifyAdmin, trickController.getTrickDetails);
 
-router.post('/list-proposition/detail/:trickId/delete', verifyToken, verifyAdmin, trickController.deleteTrick);
+router.post('/list-proposition/detail/:trickId/delete', verifyToken, verifyAdmin, trickController.refuseTrick);
 
 router.post('/list-proposition/detail/:trickId/confirm', verifyToken, verifyAdmin, trickController.confirmTrick);
+
+router.get('/my-account', verifyToken, (req, res) => {
+  res.render('myaccount', { user: req.user });
+});
+
+router.post('/my-account/update', verifyToken,[
+  
+  body('nomUser').notEmpty().withMessage('Le nom est requis').isLength({ max: 50 }).withMessage('Le nom ne doit pas dépasser 50 caractères'),
+  body('prenomUser').notEmpty().withMessage('Le prénom est requis').isLength({ max: 50 }).withMessage('Le prénom ne doit pas dépasser 50 caractères'),
+  body('emailUser').trim().isEmail().withMessage('Adresse e-mail invalide'),
+], userController.updateUser);
+
+router.get('/list-user', verifyToken,verifyAdmin, userController.getAllUser);
+
+router.post('/list-user/:userId/delete', verifyToken, verifyAdmin, userController.deleteUser);
+
+router.get('/list-user/:userId', verifyToken, verifyAdmin, userController.getUserById);
 
 router.get('/list-figure', verifyToken,verifyAdmin, trickController.getAllTrick);
 

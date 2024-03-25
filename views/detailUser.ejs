@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateur | Détail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+
+<body>
+
+    <%- include('./partials/header.ejs') %>
+
+        <div class="container mt-3">
+            <div>
+                <h1>Utilisateur</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Nom : <%= userDetails.nom %>
+                        </h4>
+                        <h4 class="card-title text-center">Prénom : <%= userDetails.prenom %>
+                        </h4>
+                        <h4 class="card-title text-center">Email : <%= userDetails.email %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1>Statistique de l'utilisateur</h1>
+</body>
+
+</html>

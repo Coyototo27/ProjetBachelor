@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const Trick = require('../models/trick');
+
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -60,7 +62,7 @@ const userController = {
         nom: user.nom,
         prenom: user.prenom,
         email: user.email,
-        admin : user.admin
+        admin: user.admin
       };
       const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
 
@@ -77,7 +79,89 @@ const userController = {
   logout: (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
-  }
+  },
+
+  getAllUser: async (req, res) => {
+    try {
+      const user = await User.findAll({ where: { admin: 0 }, raw: true });
+      console.log(user);
+      res.status(201).render('listUser', { user: req.user, users: user });
+    } catch (error) {
+      console.error(error);
+    }
+
+  },
+
+  getUserById: async (req, res) => {
+    try {
+      const userDetails = await User.findByPk(req.params.userId, { raw: true });
+      console.log(userDetails);
+      res.render('detailUser', { user: req.user, userDetails: userDetails });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  deleteUser: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.userId);
+      const admin = await User.findOne({ where: { admin: 1 }, raw: true });
+      const trick = await Trick.update({ id_user: admin.id }, { where: { id_user: req.params.userId }, raw: true });
+      console.log(trick);
+      await user.destroy();
+      res.redirect('/');
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  updateUser: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).render('myaccount', { errors: errors.array(), user: req.user });
+      }
+      const userId = req.user.userId;
+
+      console.log(userId, req.body.nomUser, req.body.prenomUser, req.body.emailUser);
+      const userToUpdate = await User.findByPk(userId);
+      console.log(userToUpdate);
+        if (!userToUpdate) {
+            return res.status(404).send("Utilisateur non trouvé.");
+        }
+
+        userToUpdate.nom = req.body.nomUser;
+        userToUpdate.prenom = req.body.prenomUser;
+        userToUpdate.email = req.body.emailUser;
+
+        await userToUpdate.save();
+
+        console.log("Utilisateur mis à jour :", userToUpdate);
+
+        const tokenData = {
+          userId: userToUpdate.id,
+          nom: userToUpdate.nom,
+          prenom: userToUpdate.prenom,
+          email: userToUpdate.email,
+          admin: userToUpdate.admin
+          // Ajoutez d'autres données d'utilisateur au besoin
+      };
+
+      const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' }); // Vous pouvez ajuster l'expiration selon vos besoins
+
+      res.clearCookie('token');
+
+      // Envoyer le nouveau token dans la réponse
+      res.cookie('token', token, { httpOnly: true }); // ou res.send({ token });
+
+      res.status(201).redirect('/');
+
+      
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Erreur lors de l\'enregistrement de la l\'utilisateur.');
+    }
+  },
 
 };
 

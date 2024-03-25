@@ -3,7 +3,32 @@ const Trick = require('../models/trick');
 const User = require('../models/user');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
+async function envoyerMail(destinataire, sujet, corps) {
+    try {
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'caron.tom1@gmail.com',
+                pass: 'ykzb ytbb idmr gsko'
+            }
+        });
+
+        let mailOptions = {
+            from: 'RandomTrick',
+            to: destinataire,
+            subject: sujet,
+            text: corps
+        };
+
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email envoyé: ' + info.response);
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'email:', error);
+        throw error; // Propager l'erreur pour la gérer dans la fonction appelante
+    }
+}
 
 const trickController = {
 
@@ -19,10 +44,8 @@ const trickController = {
                 return res.status(400).send('Veuillez télécharger une image.');
             }
 
-            // Lisez le fichier téléchargé et convertissez-le en données binaires
             const image = fs.readFileSync(req.file.path);
 
-            // Supprimez le fichier temporaire
             fs.unlinkSync(req.file.path);
 
             const newTrick = await Trick.create({
@@ -104,7 +127,22 @@ const trickController = {
             const trick = await Trick.findByPk(req.params.trickId);
             trick.confirme = 1;
             await trick.save();
+            await envoyerMail(req.body.userEmail, 'Confirmation de votre figure proposée', `Bravo ${req.body.userName} votre figure du nom de "${trick.nom}" a été accepté et est désormais disponible dans l'application RandomTrick !
+
+            Amusez-vous bien !`);
             res.redirect('/list-proposition');
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    refuseTrick: async (req, res) => {
+        try {
+            console.log(req.params.trickId);
+            const trick = await Trick.findByPk(req.params.trickId);
+            await trick.destroy();
+            await envoyerMail(req.body.userEmail, 'Réfus de votre figure proposée', `Bonjour ${req.body.userName}, malheureusement votre figure du nom de "${trick.nom}" a été refusé car elle ne respecté pas les règles de l'application RandomTrick.`);
+            res.redirect('/');
         } catch (error) {
             console.error(error);
         }
@@ -125,10 +163,8 @@ const trickController = {
                 trick.id_level = req.body.difficulte;
             }
             else {
-                // Lisez le fichier téléchargé et convertissez-le en données binaires
                 const image = fs.readFileSync(req.file.path);
 
-                // Supprimez le fichier temporaire
                 fs.unlinkSync(req.file.path);
 
                 trick.nom = req.body.nomFigure;
@@ -138,8 +174,6 @@ const trickController = {
             }
             await trick.save();
 
-
-
             res.status(201).redirect('/');
 
             console.log(trick)
@@ -148,6 +182,8 @@ const trickController = {
             res.status(500).send('Erreur lors de l\'enregistrement de la figure.');
         }
     },
+
+
 };
 
 module.exports = trickController;

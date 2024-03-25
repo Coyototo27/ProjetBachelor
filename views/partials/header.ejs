@@ -4,7 +4,7 @@
         <div class="navbar-left">
             <a href="/"><img src="/navbar/logo.png" alt="Logo" class="logo" /></a>
             <% if (user && user.admin) { %>
-                <a href="#">Liste utilisateurs</a>
+                <a href="/list-user">Liste utilisateurs</a>
                 <a href="/list-figure">Liste figure</a>
                 <a href="/trickform">Proposer figure</a>
                 <% } else if (user) { %>
@@ -26,7 +26,8 @@
                     <form action="/logout" method="post">
 
                         <p>Bonjour <%= user.prenom %>
-                                <button type="submit" class="custom-btndeco">Déconnexion</button></p>
+                        <a href="/my-account">Mon Compte</a>
+                        <button type="submit" class="custom-btndeco">Déconnexion</button></p>
                     </form>
                     <% } else { %>
                         <p>Bienvenue visiteur !

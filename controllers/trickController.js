@@ -1,10 +1,13 @@
 const Level = require('../models/level');
 const Trick = require('../models/trick');
+const Stat = require('../models/stat');
 const User = require('../models/user');
 const Sequelize = require('sequelize');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const Chart = require('chart.js');
+
 
 async function envoyerMail(destinataire, sujet, corps) {
     try {
@@ -30,6 +33,8 @@ async function envoyerMail(destinataire, sujet, corps) {
         throw error; // Propager l'erreur pour la gérer dans la fonction appelante
     }
 }
+
+
 
 const trickController = {
 
@@ -58,7 +63,9 @@ const trickController = {
             });
 
 
+            await envoyerMail(req.user.email, 'Figure proposée en attente', `Bonjour, votre figure proposée ${req.body.nomFigure} a bien été envoyé, nous traiterons cela dans les meilleures délais !
 
+            En attendant, amusez-vous bien !`);
             res.status(201).render('home', { user: req.user });
 
             console.log(newTrick)
@@ -187,16 +194,83 @@ const trickController = {
     trickRandom: async (req, res) => {
         try {
             const level = await Level.findAll({ raw: true });
-            const trick = await Trick.findOne({ where: { id_level: req.body.difficulte }, order: Sequelize.literal('rand()'), limit: 1, include: [Level], raw: true });
+            const trick = await Trick.findOne({ where: { id_level: req.body.difficulte, confirme: 1 }, order: Sequelize.literal('rand()'), limit: 1, include: [Level], raw: true });
             if (trick.length === 0) {
                 return res.status(404).send("Aucun trick disponible pour cette difficulté.");
             }
-            console.log(trick);
-            res.status(200).render('play', { user: req.user, trick: trick, levels: level });
+            console.log(req.user.userId, trick.id);
+            let stats = await Stat.findOne({ where: { id_user: req.user.userId, id_trick: trick.id }, raw: true});
+            if (!stats) {
+                stats = await Stat.create({
+                    id_user: req.user.userId,
+                    id_trick: trick.id,
+                    nb_tentatives: 0,
+                    nb_echecs: 0,
+                    nb_reussites: 0
+                  });
+            }
+            console.log(stats.nb_reussites, stats.nb_echecs);
+            // Préparer les données pour le diagramme
+            const data = {
+                labels: ['Réussites', 'Échecs'],
+                datasets: [{
+                    data: [stats.nb_reussites, stats.nb_echecs],
+                    backgroundColor: ['#190482', '#DC3545']
+                }]
+            };
+
+            console.log(JSON.stringify(data));
+            res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats });
 
         } catch (error) {
             console.error(error);
             res.status(500).send('Erreur lors de la sélection du trick aléatoire.');
+        }
+    },
+
+    trickFailure: async (req, res) => {
+        try {
+            const stat = await Stat.findByPk(req.params.statId);
+            console.log(stat, req.user.userId)
+            if( stat.id_user != req.user.userId){
+                return res.status(404).send("Cette figure de correspond pas avec votre compte.");
+            }
+
+            stat.nb_tentatives ++,
+            stat.nb_echecs ++
+
+            
+            await stat.save();
+            const level = await Level.findAll({ raw: true });
+            res.status(201).render('play', { user: req.user, trick: null, levels: level });
+
+            console.log(stat)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Erreur lors de la mise à jour de la figure.');
+        }
+    },
+
+    trickSuccess: async (req, res) => {
+        try {
+            const stat = await Stat.findByPk(req.params.statId);
+            console.log(stat.id_user, req.user.userId);
+            if( stat.id_user != req.user.userId){
+                return res.status(404).send("Cette figure de correspond pas avec votre compte.");
+            }
+
+            stat.nb_tentatives ++,
+            stat.nb_reussites ++
+
+            
+            await stat.save();
+            const level = await Level.findAll({ raw: true });
+            res.status(201).render('play', { user: req.user, trick: null, levels: level });
+
+            console.log(stat)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Erreur lors de la mise à jour de la figure.');
         }
     },
 };

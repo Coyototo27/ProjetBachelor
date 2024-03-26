@@ -5,11 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
+    <title>Jouer</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/style/style.css">
 
 </head>
 
@@ -35,14 +35,15 @@
             </form>
         </div>
         <% if (trick && user) { %>
-            <div class="container mt-5">
+            <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
+            <div class="container mt-2">
                 <div class="row justify-content-center">
+                    <!-- Trick à gauche -->
                     <div class="container mt-3 col-md-6">
-
                         <div class="card pt-3 mt-3">
                             <img class="card-img-top mx-auto"
-                                src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>" alt="Image de la figure"
-                                style="width: 500px;">
+                                src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>"
+                                alt="Image de la figure" style="width: 500px;">
                             <div class="card-body">
                                 <h3 class="card-title text-center">
                                     <%= trick.nom %>
@@ -56,25 +57,39 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 d-flex align-items-center justify-content-center">
-                        <form action="/list-proposition/detail/<%= trick.id %>/failure" method="post">
-                          <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
-                          <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
-                          <input type="hidden" name="trickId" value="<%= trick.id %>">
-                          <button type="submit" class="btn btn-danger mr-3">Echec</button>
-                        </form>
-                        <form action="/list-proposition/detail/<%= trick.id %>/success" method="post">
-                          <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
-                          <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
-                          <input type="hidden" name="trickId" value="<%= trick._id %>">
-                          <button type="submit" class="btn btn-success">Réussi</button>
-                        </form>
-                      </div>
+                    <!-- Diagramme à droite -->
+                    <div class="col-md-6 pt-5">
+                        <div class="d-flex flex-column align-items-center justify-content-center">
+                            <h4>Taux de réussites :</h4>
+                            <h5>Vous avez effectuée cette figure <%= stats.nb_tentatives %> fois</h5>
+                            <canvas id="myChart" width="300" height="300"></canvas>
+                            <script>
+                                var ctx = document.getElementById('myChart').getContext('2d');
+                                var myChart = new Chart(ctx, {
+                                    type: 'pie',
+                                    data: <%- pieChartData %>
+                                })
+                            </script>
+                            <!-- Boutons en dessous du diagramme -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <form action="/play/<%= stats.id %>/failure" method="post"
+                                    class="mr-3">
+                                    <input type="hidden" name="statId" value="<%= stats.id %>">
+                                    <button type="submit" class="btn btn-danger">Échec</button>
+                                </form>
+                                <form action="/play/<%= stats.id %>/success" method="post">
+                                    <input type="hidden" name="userstatIdName" value="<%= stats.id %>">
+                                    <button type="submit" class="btn btn-success">Réussi</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <% } else if (trick) { %>
-                <div class="container mt-3 col-4">
 
+            <% } else if (trick) { %>
+                <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
+                <div class="container mt-2 col-4">
                     <div class="card pt-3 mt-3">
                         <img class="card-img-top mx-auto"
                             src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>" alt="Image de la figure"

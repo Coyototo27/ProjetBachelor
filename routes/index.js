@@ -21,6 +21,11 @@ router.get('/play', verifyToken, levelController.getPlay);
 
 router.post('/play', verifyToken, trickController.trickRandom);
 
+router.post('/play/:statId/failure', verifyToken, trickController.trickFailure);
+
+router.post('/play/:statId/success', verifyToken, trickController.trickSuccess);
+
+router.get('/mesStats', verifyToken, userController.GetStats);
 
 router.get('/login', (req, res) => {
   res.render('login', { user: req.user });

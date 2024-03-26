@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const Trick = require('../models/trick');
+const Stat = require('../models/stat');
+
 
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
@@ -126,25 +128,25 @@ const userController = {
       console.log(userId, req.body.nomUser, req.body.prenomUser, req.body.emailUser);
       const userToUpdate = await User.findByPk(userId);
       console.log(userToUpdate);
-        if (!userToUpdate) {
-            return res.status(404).send("Utilisateur non trouvé.");
-        }
+      if (!userToUpdate) {
+        return res.status(404).send("Utilisateur non trouvé.");
+      }
 
-        userToUpdate.nom = req.body.nomUser;
-        userToUpdate.prenom = req.body.prenomUser;
-        userToUpdate.email = req.body.emailUser;
+      userToUpdate.nom = req.body.nomUser;
+      userToUpdate.prenom = req.body.prenomUser;
+      userToUpdate.email = req.body.emailUser;
 
-        await userToUpdate.save();
+      await userToUpdate.save();
 
-        console.log("Utilisateur mis à jour :", userToUpdate);
+      console.log("Utilisateur mis à jour :", userToUpdate);
 
-        const tokenData = {
-          userId: userToUpdate.id,
-          nom: userToUpdate.nom,
-          prenom: userToUpdate.prenom,
-          email: userToUpdate.email,
-          admin: userToUpdate.admin
-          // Ajoutez d'autres données d'utilisateur au besoin
+      const tokenData = {
+        userId: userToUpdate.id,
+        nom: userToUpdate.nom,
+        prenom: userToUpdate.prenom,
+        email: userToUpdate.email,
+        admin: userToUpdate.admin
+        // Ajoutez d'autres données d'utilisateur au besoin
       };
 
       const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' }); // Vous pouvez ajuster l'expiration selon vos besoins
@@ -156,12 +158,41 @@ const userController = {
 
       res.status(201).redirect('/');
 
-      
+
     } catch (error) {
       console.error(error);
       res.status(500).send('Erreur lors de l\'enregistrement de la l\'utilisateur.');
     }
   },
+
+  GetStats: async (req, res) => {
+    try {
+      const stats = await Stat.findAll({ where: { id_user: req.user.userId } });
+      let totalSuccess = 0;
+      let totalAttempts = 0;
+      console.log(stats);
+      stats.forEach(stat => {
+        totalSuccess += stat.nb_reussites;
+        totalAttempts += stat.nb_tentatives;
+      });
+
+      const successPercentage = totalAttempts !== 0 ? (totalSuccess / totalAttempts) * 100 : 0;
+      const failurePercentage = 100 - successPercentage;
+      console.log(totalSuccess, totalAttempts);
+
+      const data = {
+        labels: ['Réussites', 'Échecs'],
+        datasets: [{
+          data: [successPercentage.toFixed(2), failurePercentage.toFixed(2)],
+          backgroundColor: ['#190482', '#DC3545']
+        }]
+      };
+      res.status(200).render('mesStats', { user: req.user, pieChartData: JSON.stringify(data), totalAttempts });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
 
 };
 

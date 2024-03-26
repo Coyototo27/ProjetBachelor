@@ -25,7 +25,9 @@ router.post('/play/:statId/failure', verifyToken, trickController.trickFailure);
 
 router.post('/play/:statId/success', verifyToken, trickController.trickSuccess);
 
-router.get('/mesStats', verifyToken, userController.GetStats);
+router.get('/mes-stats', verifyToken, userController.GetStats);
+
+router.get('/mes-stats/:trickId', verifyToken, userController.GetStatById);
 
 router.get('/login', (req, res) => {
   res.render('login', { user: req.user });

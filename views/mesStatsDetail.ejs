@@ -1,0 +1,101 @@
+<!-- views/home.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jouer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/style/style.css">
+
+</head>
+
+<body>
+    <%- include('./partials/header.ejs') %>
+        <div class="container">
+            <h1>Statistiques personnel %>
+            </h1>
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img class="card-img-top mx-auto"
+                            src="data:image/jpeg;base64, <%= stat['trick.image'].toString('base64') %>"
+                            alt="Image de la figure" style="width: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h3 class="card-title text-center">
+                                <%= stat['trick.nom'] %>
+                            </h3>
+                            <h5 class="card-title text-center">
+                                <%= stat['trick.level.nom'] %>
+                            </h5>
+                            <p class="card-text">
+                                <%= stat['trick.description'] %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
+                        <div class="text-center"> <!-- Ajout de la classe text-center -->
+                            <h5>Tentatives : <%= stat.nb_tentatives %> fois</h5>
+                            <h5>Réussi : <%= stat.nb_reussites %> fois</h5>
+                            <h5>Echec : <%= stat.nb_echecs %> fois</h5>
+                            <h5>Classement : <%= userRank %> / <%= totalUsers %></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="myChart" width="300" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: <%- pieChartData %>
+                    });
+                    </script>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <h1>Statistiques globales</h1>
+                <div class="row">
+                    <div class="col-md-4">
+                        <canvas id="myChart2" width="300" height="300"></canvas>
+                        <script>
+                            var ctx2 = document.getElementById('myChart2').getContext('2d');
+                            var myChart2 = new Chart(ctx2, {
+                                type: 'pie',
+                                data: <%- pieChartData2 %>,
+                                options: {
+                                    maintainAspectRatio: false, // Désactive le maintien du rapport d'aspect
+                                    responsive: true // Rend le graphique responsive
+                                }
+                            });
+                        </script>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
+                            <div class="text-center"> <!-- Ajout de la classe text-center -->
+                                <h5>Figure effectué au total : <%= totalAttempts %></h5>
+                                <h5>Figure réussi au total : <%= totalSuccess %></h5>
+                                <h5>Figure échoué au total : <%= totalAttempts-totalSuccess %></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
+                            <div class="text-center"> <!-- Ajout de la classe text-center -->
+                                <h5>Meilleur utilisateur : <%= bestUserStatId['user.prenom'] + ' ' + bestUserStatId['user.nom']%></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</body>
+
+
+</html>

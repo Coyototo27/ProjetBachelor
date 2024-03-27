@@ -1,41 +1,79 @@
-<!-- header.ejs -->
 <header>
-    <nav class="navbar">
-        <div class="navbar-left">
-            <a href="/"><img src="/navbar/logo.png" alt="Logo" class="logo" /></a>
-            <% if (user && user.admin) { %>
-                <a href="/list-user">Liste utilisateurs</a>
-                <a href="/list-figure">Liste figure</a>
-                <a href="/trickform">Proposer figure</a>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="/"><img src="/navbar/logo.png" alt="Logo" class="logo" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon" style="background-color: #1f61ca;"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <% if (user && user.admin) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/list-user">Liste utilisateurs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/list-figure">Liste figure</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/trickform">Proposer figure</a>
+                </li>
                 <% } else if (user) { %>
-                    <a href="/play">Jouer</a>
-                    <a href="/mes-stats">Mes stats</a>
-                    <a href="/trickform">Proposer figure</a>
-                    <% } else { %>
-                        <a href="/play">Jouer</a>
-                        <% } %>
-        </div>
-        <div class="navbar-right">
-            <% if (user && user.admin) { %>
-                <form action="/logout" method="post">
-                    <p> <a href="/list-proposition"><img class="svg-msg" src="/navbar/envelope.svg" alt="Messagerie figure"></a>
-                        Bonjour Admin <%= user.prenom %>
-                            <button type="submit" class="custom-btndeco">Déconnexion</button></p>
-                </form>
-                <% } else if (user) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/play">Jouer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/mes-stats">Mes stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/trickform">Proposer figure</a>
+                </li>
+                <% } else { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/play">Jouer</a>
+                </li>
+                <% } %>
+            </ul>
+            <ul class="navbar-nav">
+                <% if (user && user.admin) { %>
+                <li class="nav-item">
+                    <a href="/list-proposition" class="nav-link"><img class="svg-msg"
+                            src="/navbar/envelope.svg" alt="Messagerie figure"></a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link">Bonjour Admin <%= user.prenom %></span>
+                </li>
+                <li class="nav-item">
                     <form action="/logout" method="post">
-
-                        <p>Bonjour <%= user.prenom %>
-                        <a href="/my-account">Mon Compte</a>
-                        <button type="submit" class="custom-btndeco">Déconnexion</button></p>
+                        <button type="submit" class="btn custom-btndeco">Déconnexion</button>
                     </form>
-                    <% } else { %>
-                        <p>Bienvenue visiteur !
-                            <a href="/login">Connexion</a>
-                            <a href="/register">S'inscrire</a>
-                        </p>
-                        <% } %>
-
+                </li>
+                <% } else if (user) { %>
+                <li class="nav-item">
+                    <span class="nav-link">Bonjour <%= user.prenom %></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/my-account">Mon Compte</a>
+                </li>
+                <li class="nav-item">
+                    <form action="/logout" method="post">
+                        <button type="submit" class="btn custom-btndeco">Déconnexion</button>
+                    </form>
+                </li>
+                <% } else { %>
+                <li class="nav-item">
+                    <span class="nav-link">Bienvenue visiteur !</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Connexion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">S'inscrire</a>
+                </li>
+                <% } %>
+            </ul>
         </div>
     </nav>
 </header>

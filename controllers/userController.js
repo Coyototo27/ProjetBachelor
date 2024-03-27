@@ -229,7 +229,7 @@ const userController = {
           nb_reussites: { [Op.gt]: stat.nb_reussites }
         }
       });
-      
+
       userRank++;
 
       const totalUsers = await User.count();
@@ -263,7 +263,7 @@ const userController = {
         },
         order: [
           ['nb_reussites', 'DESC']
-        ], include:[User], raw: true
+        ], include: [User], raw: true
       });
       console.log(bestUserStatId);
 
@@ -301,7 +301,7 @@ const userController = {
           nb_reussites: { [Op.gt]: stat.nb_reussites }
         }
       });
-      
+
       userRank++;
 
       const totalUsers = await User.count();
@@ -335,11 +335,32 @@ const userController = {
         },
         order: [
           ['nb_reussites', 'DESC']
-        ], include:[User], raw: true
+        ], include: [User], raw: true
       });
       console.log(bestUserStatId);
 
       res.status(200).render('detailStatUser', { user: req.user, stat: stat, statsGlobal: statsGlobal, userRank, totalUsers, totalAttempts, totalSuccess, bestUserStatId, pieChartData: JSON.stringify(data), pieChartData2: JSON.stringify(data2) });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  getAccount: async (req, res) => {
+    try {
+      const trick = await Trick.findAll({ where: { id_user: req.user.userId }, include: [Level], raw: true });
+      console.log(trick);
+      res.status(200).render('myaccount', { user: req.user, tricks: trick });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  deleteMyTrick: async (req, res) => {
+    try {
+      console.log(req.params.trickId);
+      const trick = await Trick.findOne({ where: { id: req.params.trickId, id_user: req.user.userId } });
+      await trick.destroy();
+      res.redirect('/');
     } catch (error) {
       console.error(error);
     }

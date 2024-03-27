@@ -46,14 +46,18 @@ h2 {
 }
 
 .custom-btndeco {
-    background: none;
-    border: none;
-    cursor: pointer;
+    background-color: none; /* Couleur de fond par défaut */
     color: #C2D9FF;
+    border: none; /* Supprimer la bordure par défaut */
     font: inherit;
-    padding: 0;
-    margin-left: 25px;
+    transition: background-color 0.3s, color 0.3s; /* Animation de transition */
 }
+
+.custom-btndeco:hover {
+    background-color: none; /* Couleur de fond au survol */
+    color: white; /* Couleur du texte au survol */
+}
+
 
 .custom-card {
     background-color: #E8E4FE;

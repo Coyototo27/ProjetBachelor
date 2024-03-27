@@ -72,9 +72,7 @@ router.post('/list-proposition/detail/:trickId/delete', verifyToken, verifyAdmin
 
 router.post('/list-proposition/detail/:trickId/confirm', verifyToken, verifyAdmin, trickController.confirmTrick);
 
-router.get('/my-account', verifyToken, (req, res) => {
-  res.render('myaccount', { user: req.user });
-});
+router.get('/my-account', verifyToken, userController.getAccount);
 
 router.post('/my-account/update', verifyToken,[
   
@@ -82,6 +80,8 @@ router.post('/my-account/update', verifyToken,[
   body('prenomUser').notEmpty().withMessage('Le prénom est requis').isLength({ max: 50 }).withMessage('Le prénom ne doit pas dépasser 50 caractères'),
   body('emailUser').trim().isEmail().withMessage('Adresse e-mail invalide'),
 ], userController.updateUser);
+
+router.post('/my-trick/:trickId/delete', verifyToken, userController.deleteMyTrick);
 
 router.get('/list-user', verifyToken,verifyAdmin, userController.getAllUser);
 

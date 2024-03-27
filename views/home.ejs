@@ -1,4 +1,3 @@
-<!-- views/home.ejs -->
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -7,84 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="/style/style.css">
-
 </head>
 
 <body>
     <%- include('./partials/header.ejs') %>
-        <div class="container">
-            <h1>Bienvenue sur RandomTrick</h1>
-            <p class="sousTitre">Cette application a pour but de générer une figure de parkour aléatoirement selon une
-                difficulté que vous aurez choisit.
-                Vous devrez donc réaliser cette figure et dire si, oui ou non, vous l'aurez réussi.<br><br>
-                Mais avant de commencer,</p>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="text">
-                        <h2>Qu'est-ce que le parkour ?</h2>
-                        <p>Le parkour, également appelé l'art du déplacement, est une discipline physique qui implique
-                            le
-                            déplacement efficace d'un point à un autre en utilisant principalement les capacités du
-                            corps
-                            humain. Les participants, appelés traceurs ou traceuses, utilisent des mouvements tels que
-                            sauts,
-                            roulades, escalades et équilibres pour surmonter des obstacles de manière rapide, fluide et
-                            efficace. L'objectif est de se déplacer de manière créative à travers l'environnement urbain
-                            ou
-                            naturel tout en surmontant les obstacles de manière efficiente.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="image">
-                        <img src="presentation.jpg" alt="Image de présentation" class="img-fluid">
-                    </div>
+    <div class="container">
+        <h1 class="text-center mt-4">Bienvenue sur RandomTrick</h1>
+        <p class="sousTitre text-center">Cette application a pour but de générer une figure de parkour aléatoirement selon une
+            difficulté que vous aurez choisie. Vous devrez donc réaliser cette figure et dire si, oui ou non, vous l'aurez réussie.
+            <br><br> Mais avant de commencer,
+        </p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="text">
+                    <h2>Qu'est-ce que le parkour ?</h2>
+                    <p>Le parkour, également appelé l'art du déplacement, est une discipline physique qui implique le
+                        déplacement efficace d'un point à un autre en utilisant principalement les capacités du corps
+                        humain. Les participants, appelés traceurs ou traceuses, utilisent des mouvements tels que
+                        sauts, roulades, escalades et équilibres pour surmonter des obstacles de manière rapide, fluide
+                        et efficace. L'objectif est de se déplacer de manière créative à travers l'environnement urbain
+                        ou naturel tout en surmontant les obstacles de manière efficiente.</p>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="image">
-                        <img src="david_belle.jpg" alt="Image de David Belle" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="image">
-                        <img src="sebastien_foucan.png" alt="Image de Sebastien Foucan" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="text">
-                        <h2>L'histoire du parkour</h2>
-                        <p>Le parkour a émergé à la fin des années 1980 en France, développé par des personnes telles
-                            que David Belle et Sébastien Foucan. Il s'inspire de diverses disciplines telles que
-                            l'athlétisme, la gymnastique, l'escalade et les arts martiaux. Le parkour met l'accent sur
-                            la liberté de mouvement, la créativité et la maîtrise du corps.</p>
-                    </div>
+            <div class="col-md-6">
+                <div class="image">
+                    <img src="presentation.jpg" alt="Image de présentation" class="img-fluid">
                 </div>
             </div>
-            <div class="row mt-4 mb-4">
-                <div class="col-md-6">
-                    <div class="text">
-                        <p>Il convient de noter que le parkour est souvent comparé au freerun, une discipline similaire
-                            qui
-                            intègre des éléments acrobatiques et est plus axée sur l'expression artistique et la
-                            créativité
-                            dans
-                            le mouvement. Les deux termes sont parfois utilisés de manière interchangeable, bien que
-                            certains
-                            praticiens préfèrent faire la distinction entre les deux.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="image">
-                        <img src="cork.jpg" alt="Image de présentation" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-
         </div>
+        <div class="row mt-4" >
+            <div class="col-sm-6 col-md-3">
+                <div class="image">
+                    <img src="david_belle.jpg" alt="Image de David Belle" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="image">
+                    <img src="sebastien_foucan.png" alt="Image de Sebastien Foucan" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text">
+                    <h2>L'histoire du parkour</h2>
+                    <p>Le parkour a émergé à la fin des années 1980 en France, développé par des personnes telles que David
+                        Belle et Sébastien Foucan. Il s'inspire de diverses disciplines telles que l'athlétisme, la gymnastique,
+                        l'escalade et les arts martiaux. Le parkour met l'accent sur la liberté de mouvement, la créativité
+                        et la maîtrise du corps.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4 mb-4">
+            <div class="col-md-6">
+                <div class="text">
+                    <p>Il convient de noter que le parkour est souvent comparé au freerun, une discipline similaire qui intègre
+                        des éléments acrobatiques et est plus axée sur l'expression artistique et la créativité dans le mouvement.
+                        Les deux termes sont parfois utilisés de manière interchangeable, bien que certains praticiens préfèrent
+                        faire la distinction entre les deux.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="image">
+                    <img src="cork.jpg" alt="Image de présentation" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

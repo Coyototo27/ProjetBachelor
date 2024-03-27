@@ -89,6 +89,8 @@ router.post('/list-user/:userId/delete', verifyToken, verifyAdmin, userControlle
 
 router.get('/list-user/:userId', verifyToken, verifyAdmin, userController.getUserById);
 
+router.get('/list-user/:userId/:trickId', verifyToken, verifyAdmin, userController.getStatUserById);
+
 router.get('/list-figure', verifyToken,verifyAdmin, trickController.getAllTrick);
 
 router.post('/list-figure/:trickId/delete', verifyToken, verifyAdmin, trickController.deleteTrick);

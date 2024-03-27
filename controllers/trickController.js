@@ -193,34 +193,38 @@ const trickController = {
 
     trickRandom: async (req, res) => {
         try {
+            console.log(req.user);
             const level = await Level.findAll({ raw: true });
             const trick = await Trick.findOne({ where: { id_level: req.body.difficulte, confirme: 1 }, order: Sequelize.literal('rand()'), limit: 1, include: [Level], raw: true });
             if (trick.length === 0) {
                 return res.status(404).send("Aucun trick disponible pour cette difficulté.");
             }
-            console.log(req.user.userId, trick.id);
-            let stats = await Stat.findOne({ where: { id_user: req.user.userId, id_trick: trick.id }, raw: true});
-            if (!stats) {
-                stats = await Stat.create({
-                    id_user: req.user.userId,
-                    id_trick: trick.id,
-                    nb_tentatives: 0,
-                    nb_echecs: 0,
-                    nb_reussites: 0
-                  });
+            if (!req.user) {
+                res.status(200).render('play', { user: null, trick: trick, levels: level });
             }
-            console.log(stats.nb_reussites, stats.nb_echecs);
-            // Préparer les données pour le diagramme
-            const data = {
-                labels: ['Réussites', 'Échecs'],
-                datasets: [{
-                    data: [stats.nb_reussites, stats.nb_echecs],
-                    backgroundColor: ['#190482', '#DC3545']
-                }]
-            };
+            else {
+                let stats = await Stat.findOne({ where: { id_user: req.user.userId, id_trick: trick.id }, raw: true });
+                if (!stats) {
+                    stats = await Stat.create({
+                        id_user: req.user.userId,
+                        id_trick: trick.id,
+                        nb_tentatives: 0,
+                        nb_echecs: 0,
+                        nb_reussites: 0
+                    });
+                }
+                // Préparer les données pour le diagramme
+                const data = {
+                    labels: ['Réussites', 'Échecs'],
+                    datasets: [{
+                        data: [stats.nb_reussites, stats.nb_echecs],
+                        backgroundColor: ['#190482', '#DC3545']
+                    }]
+                };
 
-            console.log(JSON.stringify(data));
-            res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats });
+                res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats });
+            }
+
 
         } catch (error) {
             console.error(error);
@@ -232,14 +236,14 @@ const trickController = {
         try {
             const stat = await Stat.findByPk(req.params.statId);
             console.log(stat, req.user.userId)
-            if( stat.id_user != req.user.userId){
+            if (stat.id_user != req.user.userId) {
                 return res.status(404).send("Cette figure de correspond pas avec votre compte.");
             }
 
-            stat.nb_tentatives ++,
-            stat.nb_echecs ++
+            stat.nb_tentatives++,
+                stat.nb_echecs++
 
-            
+
             await stat.save();
             const level = await Level.findAll({ raw: true });
             res.status(201).render('play', { user: req.user, trick: null, levels: level });
@@ -255,14 +259,14 @@ const trickController = {
         try {
             const stat = await Stat.findByPk(req.params.statId);
             console.log(stat.id_user, req.user.userId);
-            if( stat.id_user != req.user.userId){
+            if (stat.id_user != req.user.userId) {
                 return res.status(404).send("Cette figure de correspond pas avec votre compte.");
             }
 
-            stat.nb_tentatives ++,
-            stat.nb_reussites ++
+            stat.nb_tentatives++,
+                stat.nb_reussites++
 
-            
+
             await stat.save();
             const level = await Level.findAll({ raw: true });
             res.status(201).render('play', { user: req.user, trick: null, levels: level });

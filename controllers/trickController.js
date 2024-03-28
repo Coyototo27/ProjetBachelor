@@ -66,7 +66,7 @@ const trickController = {
             await envoyerMail(req.user.email, 'Figure proposée en attente', `Bonjour, votre figure proposée ${req.body.nomFigure} a bien été envoyé, nous traiterons cela dans les meilleures délais !
 
             En attendant, amusez-vous bien !`);
-            res.status(201).render('home', { user: req.user });
+            res.status(201).redirect('/');
 
             console.log(newTrick)
         } catch (error) {
@@ -90,7 +90,7 @@ const trickController = {
         try {
             const trick = await Trick.findAll({ where: { confirme: 1 }, include: [Level, User], raw: true });
             console.log(trick);
-            res.status(201).render('listTrick', { user: req.user, tricks: trick });
+            res.status(201).render('listTrick', { user: req.user, tricks: trick, alertMessage: null });
         } catch (error) {
             console.error(error);
         }
@@ -124,11 +124,22 @@ const trickController = {
             console.log(req.params.trickId);
             const trick = await Trick.findByPk(req.params.trickId);
             await trick.destroy();
-            res.redirect('/');
+            //res.render('home', { user: req.user, alertMessage: "La figure a bien été supprimée !" });
+            res.redirect('/trick/list-figure')
         } catch (error) {
             console.error(error);
         }
     },
+
+    deleteMyTrick: async (req, res) => {
+        try {
+          const trick = await Trick.findOne({ where: { id: req.params.trickId, id_user: req.user.userId } });
+          await trick.destroy();
+          res.redirect('/');
+        } catch (error) {
+          console.error(error);
+        }
+      },
 
     confirmTrick: async (req, res) => {
         try {
@@ -138,7 +149,7 @@ const trickController = {
             await envoyerMail(req.body.userEmail, 'Confirmation de votre figure proposée', `Bravo ${req.body.userName} votre figure du nom de "${trick.nom}" a été accepté et est désormais disponible dans l'application RandomTrick !
 
             Amusez-vous bien !`);
-            res.redirect('/list-proposition');
+            res.redirect('/');
         } catch (error) {
             console.error(error);
         }
@@ -196,13 +207,19 @@ const trickController = {
             console.log(req.user);
             const level = await Level.findAll({ raw: true });
             const trick = await Trick.findOne({ where: { id_level: req.body.difficulte, confirme: 1 }, order: Sequelize.literal('rand()'), limit: 1, include: [Level], raw: true });
-            if (trick.length === 0) {
-                return res.status(404).send("Aucun trick disponible pour cette difficulté.");
+            if (!trick) {
+                console.log("Je passe par le 1er if");
+                const message = "Aucun trick disponible pour cette difficulté.";
+                res.render('play', { user: req.user, trick: trick, levels: level, alertMessage: message });
             }
             if (!req.user) {
-                res.status(200).render('play', { user: null, trick: trick, levels: level });
+                console.log("Je passe par le 2eme if");
+
+                res.status(200).render('play', { user: null, trick: trick, levels: level, alertMessage: null  });
             }
-            else {
+            if (trick && req.user) {
+                console.log("Je passe par là");
+
                 let stats = await Stat.findOne({ where: { id_user: req.user.userId, id_trick: trick.id }, raw: true });
                 if (!stats) {
                     stats = await Stat.create({
@@ -222,7 +239,7 @@ const trickController = {
                     }]
                 };
 
-                res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats });
+                res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats , alertMessage: null });
             }
 
 
@@ -246,7 +263,7 @@ const trickController = {
 
             await stat.save();
             const level = await Level.findAll({ raw: true });
-            res.status(201).render('play', { user: req.user, trick: null, levels: level });
+            res.status(201).render('play', { user: req.user, trick: null, levels: level, alertMessage: "Dommage, la prochaine fois c'est la bonne !" });
 
             console.log(stat)
         } catch (error) {
@@ -258,7 +275,6 @@ const trickController = {
     trickSuccess: async (req, res) => {
         try {
             const stat = await Stat.findByPk(req.params.statId);
-            console.log(stat.id_user, req.user.userId);
             if (stat.id_user != req.user.userId) {
                 return res.status(404).send("Cette figure de correspond pas avec votre compte.");
             }
@@ -269,7 +285,7 @@ const trickController = {
 
             await stat.save();
             const level = await Level.findAll({ raw: true });
-            res.status(201).render('play', { user: req.user, trick: null, levels: level });
+            res.status(201).render('play', { user: req.user, trick: null, levels: level, alertMessage: "Bravo, continuez comme ça !" });
 
             console.log(stat)
         } catch (error) {

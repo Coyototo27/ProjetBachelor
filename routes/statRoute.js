@@ -1,4 +1,3 @@
-// routes/index.js
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
@@ -12,16 +11,10 @@ const upload = require('../middleware/configMutler'); // Importez votre configur
 const verifyToken = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 
-router.get('/', verifyToken, (req, res) => {
-  res.render('home', { user: req.user });
-});
+router.get('/mes-stats', verifyToken, statController.GetStats);
 
-router.get('/play', verifyToken, levelController.getPlay);
+router.get('/mes-stats/:trickId', verifyToken, statController.GetStatById);
 
-router.post('/play', verifyToken, trickController.trickRandom);
-
-router.post('/play/:statId/failure', verifyToken, trickController.trickFailure);
-
-router.post('/play/:statId/success', verifyToken, trickController.trickSuccess);
+router.post('/mes-stats/:trickId/reset', verifyToken, statController.resetStatById);
 
 module.exports = router;

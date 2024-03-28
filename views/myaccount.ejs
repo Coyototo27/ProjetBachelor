@@ -31,7 +31,7 @@
                     <h1 class="text-center">Mon Compte</h1>
                     <div class="card custom-card">
                         <div class="card-body">
-                            <form action="/my-account/update" method="post">
+                            <form action="/user/my-account/update" method="post">
                                 <% if (typeof errors !=='undefined' && errors.length> 0) { %>
                                     <div class="alert alert-danger" role="alert">
                                         <% errors.forEach(error=> { %>
@@ -98,19 +98,38 @@
                                             <% } %>
                                 </td>
                                 <td class="text-center">
-                                    <form action="/my-trick/<%= trick.id %>/delete" method="post">
-                                        <input type="hidden" name="trickId" value="<%= trick.id %>">
+                                    <form id="suppForm_<%= trick.id %>" action="/trick/my-trick/<%= trick.id %>/delete" method="post">
                                         <% if (trick.confirme) { %>
                                             <button type="submit" class="border-0" disabled><i class="bi bi-trash"  style="color: grey;"></i></button>
-                                            <% } else { %>
-                                                <button type="submit" class="border-0"><i class="bi bi-trash"></i></button>
-                                                <% } %>
+                                        <% } else { %>
+                                            <button type="button" class="border-0" onclick="confirmSupp('<%= trick.id %>')"><i class="bi bi-trash"></i></button>
+                                            <script>
+                                                function confirmSupp(trickId) {
+                                                    if (confirm("Êtes-vous sûr de vouloir supprimer cette figure ?")) {
+                                                        document.getElementById("suppForm_" + trickId).submit();
+                                                    }
+                                                }
+                                            </script>
+                                        <% } %>
+                                        
                                     </form>
                                 </td>
                             </tr>
                             <% }); %>
                     </tbody>
                 </table>
+            </div>
+            <div class="contaier mt-5 text-center">
+                <form id="suppAccount" action="/user/my-account/delete" method="post">
+                        <button type="submit" class="border-0 btn btn-danger" onclick="confirmSuppAccount()">Supprimer mon compte</button>
+                        <script>
+                            function confirmSuppAccount() {
+                                if (confirm("Êtes-vous sûr de vouloir supprimer votre compte ?")) {
+                                    document.getElementById("suppAccount").submit();
+                                }
+                            }
+                        </script>
+                </form>
             </div>
         </div>
 </body>

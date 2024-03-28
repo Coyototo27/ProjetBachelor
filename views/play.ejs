@@ -15,99 +15,104 @@
 
 <body>
     <%- include('./partials/header.ejs') %>
-        <h1>Générer une figure aléatoirement</h1>
-        <div class="container mt-5 col-3">
-            <form action="/play" method="post">
-                <div class="form-group">
-                    <label class="text-center">Sélectionner une difficulté</label>
-                    <select class="form-control" id="difficulte" name="difficulte" required>
-                        <% levels.forEach(level=> { %>
-                            <option value="<%= level.id %>">
-                                <%= level.nom %>
-                            </option>
-                            <% }) %>
-                    </select>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary custom-btn">Lancer</button>
-                </div>
-            </form>
-        </div>
-        <% if (trick && user) { %>
-            <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
-            <div class="container mt-2">
-                <div class="row justify-content-center">
-                    <!-- Trick à gauche -->
-                    <div class="container mt-3 col-md-6">
-                        <div class="card pt-3 mt-3">
-                            <img class="card-img-top mx-auto"
-                                src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>"
-                                alt="Image de la figure" style="width: 500px;">
-                            <div class="card-body">
-                                <h3 class="card-title text-center">
-                                    <%= trick.nom %>
-                                </h3>
-                                <h5 class="card-title text-center">
-                                    <%= trick['level.nom'] %>
-                                </h5>
-                                <p class="card-text">
-                                    <%= trick.description %>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Diagramme à droite -->
-                    <div class="col-md-6 pt-5">
-                        <div class="d-flex flex-column align-items-center justify-content-center">
-                            <h4>Taux de réussites :</h4>
-                            <h5>Vous avez effectuée cette figure <%= stats.nb_tentatives %> fois</h5>
-                            <canvas id="myChart" width="300" height="300"></canvas>
-                            <script>
-                                var ctx = document.getElementById('myChart').getContext('2d');
-                                var myChart = new Chart(ctx, {
-                                    type: 'pie',
-                                    data: <%- pieChartData %>
-                                })
-                            </script>
-                            <!-- Boutons en dessous du diagramme -->
-                            <div class="d-flex justify-content-center mt-3">
-                                <form action="/play/<%= stats.id %>/failure" method="post"
-                                    class="mr-3">
-                                    <input type="hidden" name="statId" value="<%= stats.id %>">
-                                    <button type="submit" class="btn btn-danger">Échec</button>
-                                </form>
-                                <form action="/play/<%= stats.id %>/success" method="post">
-                                    <input type="hidden" name="userstatIdName" value="<%= stats.id %>">
-                                    <button type="submit" class="btn btn-success">Réussi</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <% if (alertMessage) { %>
+            <div class="alert alert-warning" role="alert">
+                <%= alertMessage %>
             </div>
+            <% } %>
 
-            <% } else if (trick) { %>
-                <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
-                <div class="container mt-2 col-4">
-                    <div class="card pt-3 mt-3">
-                        <img class="card-img-top mx-auto"
-                            src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>" alt="Image de la figure"
-                            style="width: 500px;">
-                        <div class="card-body">
-                            <h3 class="card-title text-center">
-                                <%= trick.nom %>
-                            </h3>
-                            <h5 class="card-title text-center">
-                                <%= trick['level.nom'] %>
-                            </h5>
-                            <p class="card-text">
-                                <%= trick.description %>
-                            </p>
+                <h1>Générer une figure aléatoirement</h1>
+                <div class="container mt-5 col-3">
+                    <form action="/play" method="post">
+                        <div class="form-group">
+                            <label class="text-center">Sélectionner une difficulté</label>
+                            <select class="form-control" id="difficulte" name="difficulte" required>
+                                <% levels.forEach(level=> { %>
+                                    <option value="<%= level.id %>">
+                                        <%= level.nom %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary custom-btn">Lancer</button>
+                        </div>
+                    </form>
+                </div>
+                <% if (trick && user) { %>
+                    <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
+                    <div class="container mt-2">
+                        <div class="row justify-content-center">
+                            <!-- Trick à gauche -->
+                            <div class="container mt-3 col-md-6">
+                                <div class="card pt-3 mt-3">
+                                    <img class="card-img-top mx-auto"
+                                        src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>"
+                                        alt="Image de la figure" style="width: 500px;">
+                                    <div class="card-body">
+                                        <h3 class="card-title text-center">
+                                            <%= trick.nom %>
+                                        </h3>
+                                        <h5 class="card-title text-center">
+                                            <%= trick['level.nom'] %>
+                                        </h5>
+                                        <p class="card-text">
+                                            <%= trick.description %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Diagramme à droite -->
+                            <div class="col-md-6 pt-5">
+                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                    <h4>Taux de réussites :</h4>
+                                    <h5>Vous avez effectuée cette figure <%= stats.nb_tentatives %> fois</h5>
+                                    <canvas id="myChart" width="300" height="300"></canvas>
+                                    <script>
+                                        var ctx = document.getElementById('myChart').getContext('2d');
+                                        var myChart = new Chart(ctx, {
+                                            type: 'pie',
+                                            data: <%- pieChartData %>
+                                })
+                                    </script>
+                                    <!-- Boutons en dessous du diagramme -->
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <form action="/play/<%= stats.id %>/failure" method="post" class="mr-3">
+                                            <input type="hidden" name="statId" value="<%= stats.id %>">
+                                            <button type="submit" class="btn btn-danger">Échec</button>
+                                        </form>
+                                        <form action="/play/<%= stats.id %>/success" method="post">
+                                            <input type="hidden" name="userstatIdName" value="<%= stats.id %>">
+                                            <button type="submit" class="btn btn-success">Réussi</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <% } %>
+
+                    <% } else if (trick) { %>
+                        <h3 class="text-center mt-3">Vous devez effectuer ceci :</h3>
+                        <div class="container mt-2 col-4">
+                            <div class="card pt-3 mt-3">
+                                <img class="card-img-top mx-auto"
+                                    src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>"
+                                    alt="Image de la figure" style="width: 500px;">
+                                <div class="card-body">
+                                    <h3 class="card-title text-center">
+                                        <%= trick.nom %>
+                                    </h3>
+                                    <h5 class="card-title text-center">
+                                        <%= trick['level.nom'] %>
+                                    </h5>
+                                    <p class="card-text">
+                                        <%= trick.description %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
 </body>
 
 </html>

@@ -10,7 +10,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 const index = require('./routes/index');
+const userRoutes = require('./routes/userRoute');
+const trickRoutes = require('./routes/trickRoute');
+const statRoutes = require('./routes/statRoute');
+
 app.use('/', index);
+app.use('/user', userRoutes);
+app.use('/trick', trickRoutes);
+app.use('/stat', statRoutes);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 
 </head>
 <body>
@@ -21,7 +21,7 @@
             <div class="col-md-6">
                 <div class="card custom-card">
                     <div class="card-body">
-                        <form action="/login" method="post">
+                        <form action="/user/login" method="post">
                             <% if (typeof error !== 'undefined' && error) { %>
                                 <div class="alert alert-danger" role="alert">
                                     <%= error %>
@@ -38,7 +38,7 @@
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary custom-btn">Connexion</button>
                             </div>
-                            <p class="sousTitre">Vous n'avez pas de compte ? <a href="/register">Inscrivez-vous !</a></p>
+                            <p class="sousTitre">Vous n'avez pas de compte ? <a href="/user/register">Inscrivez-vous !</a></p>
                         </form>
                     </div>
                 </div>

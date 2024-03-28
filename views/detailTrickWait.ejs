@@ -39,14 +39,14 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6 d-flex align-items-end justify-content-center">
-          <form action="/list-proposition/detail/<%= trick.id %>/delete" method="post">
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <form action="/trick/list-proposition/detail/<%= trick.id %>/delete" method="post">
             <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
             <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
             <input type="hidden" name="trickId" value="<%= trick.id %>">
             <button type="submit" class="btn btn-danger mr-3">Refuser</button>
           </form>
-          <form action="/list-proposition/detail/<%= trick.id %>/confirm" method="post">
+          <form action="/trick/list-proposition/detail/<%= trick.id %>/confirm" method="post">
             <input type="hidden" name="userName" value="<%= trick['user.prenom'] %>">
             <input type="hidden" name="userEmail" value="<%= trick['user.email'] %>">
             <input type="hidden" name="trickId" value="<%= trick._id %>">

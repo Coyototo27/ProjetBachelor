@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistique | <%= stat['trick.nom'] %></title>
+    <title>Statistique | <%= stat['trick.nom'] %>
+    </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -43,7 +44,20 @@
                             <h5>Tentatives : <%= stat.nb_tentatives %> fois</h5>
                             <h5>Réussi : <%= stat.nb_reussites %> fois</h5>
                             <h5>Echec : <%= stat.nb_echecs %> fois</h5>
-                            <h5>Classement : <%= userRank %> / <%= totalUsers %></h5>
+                            <h5>Classement : <%= userRank %> / <%= totalUsers %>
+                            </h5>
+                            <form id="resetForm" action="/stat/mes-stats/<%= stat['trick.id'] %>/reset" method="post">
+                                <button type="button" class="btn btn-primary custom-btn"
+                                    onclick="confirmReset()">Réinitialiser</button>
+                            </form>
+
+                            <script>
+                                function confirmReset() {
+                                    if (confirm("Êtes-vous sûr de vouloir réinitialiser les statistiques ?")) {
+                                        document.getElementById("resetForm").submit();
+                                    }
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -78,16 +92,21 @@
                     <div class="col-md-4">
                         <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
                             <div class="text-center"> <!-- Ajout de la classe text-center -->
-                                <h5>Figure effectué au total : <%= totalAttempts %></h5>
-                                <h5>Figure réussi au total : <%= totalSuccess %></h5>
-                                <h5>Figure échoué au total : <%= totalAttempts-totalSuccess %></h5>
+                                <h5>Figure effectué au total : <%= totalAttempts %>
+                                </h5>
+                                <h5>Figure réussi au total : <%= totalSuccess %>
+                                </h5>
+                                <h5>Figure échoué au total : <%= totalAttempts-totalSuccess %>
+                                </h5>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
                             <div class="text-center"> <!-- Ajout de la classe text-center -->
-                                <h5>Meilleur utilisateur : <%= bestUserStatId['user.prenom'] + ' ' + bestUserStatId['user.nom']%></h5>
+                                <h5>Meilleur utilisateur : <%= bestUserStatId['user.prenom'] + ' ' +
+                                        bestUserStatId['user.nom']%>
+                                </h5>
                             </div>
                         </div>
                     </div>

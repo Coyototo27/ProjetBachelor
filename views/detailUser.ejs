@@ -28,35 +28,34 @@
                     </div>
                 </div>
             </div>
-
             <h1>Statistique de l'utilisateur</h1>
-            <div class="row mt-3">
-                <div class="card-deck">
-                    <% tricks.forEach(trick=> { %>
-                        <div class="col-md-<%= 12 / Math.min(tricks.length, 4) %> mt-5">
-                            <a href="/user/list-user/<%= userDetails.id %>/<%= trick.id %>"
+            <% for (let i = 0; i < tricks.length; i+=4) { %>
+                <div class="row mt-3">
+                    <% for (let j = i; j < Math.min(i + 4, tricks.length); j++) { %>
+                        <div class="col-md-3">
+                            <a href="/user/list-user/<%= userDetails.id %>/<%= tricks[j].id %>"
                                 style="text-decoration: none; outline: none; color: black;">
                                 <div class="card">
                                     <img class="card-img-top mx-auto"
-                                        src="data:image/jpeg;base64, <%= trick.image.toString('base64') %>"
+                                        src="data:image/jpeg;base64, <%= tricks[j].image.toString('base64') %>"
                                         alt="Image de la figure" style="height: 200px; object-fit: cover;">
                                     <div class="card-body">
                                         <h5 class="card-title text-center">
-                                            <%= trick.nom %>
+                                            <%= tricks[j].nom %>
                                         </h5>
                                         <h6 class="card-title text-center">
-                                            <%= trick['level.nom'] %>
+                                            <%= tricks[j]['level.nom'] %>
                                         </h6>
                                         <p class="card-text">
-                                            <%= trick.description %>
+                                            <%= tricks[j].description %>
                                         </p>
                                     </div>
                                 </div>
                             </a>
                         </div>
-                    <% }); %>
+                    <% } %>
                 </div>
-            </div>
+            <% } %>
         </div>
 </body>
 

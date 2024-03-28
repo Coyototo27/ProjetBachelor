@@ -193,9 +193,8 @@ const trickController = {
             }
             await trick.save();
 
-            res.status(201).redirect('/');
-
-            console.log(trick)
+            res.redirect('/trick/list-figure')
+            
         } catch (error) {
             console.error(error);
             res.status(500).send('Erreur lors de l\'enregistrement de la figure.');

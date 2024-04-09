@@ -8,11 +8,12 @@ const userController = {
 
 
     GetStats: async (req, res) => {
+        //fonction pour voir les stats de l'utilisateur connecté
         try {
+            //on récupère les stats de l'utilisateur connecté
             const stats = await Stat.findAll({ where: { id_user: req.user.userId } });
             let totalSuccess = 0;
             let totalAttempts = 0;
-            console.log(stats);
             stats.forEach(stat => {
                 totalSuccess += stat.nb_reussites;
                 totalAttempts += stat.nb_tentatives;
@@ -22,6 +23,7 @@ const userController = {
             const failurePercentage = 100 - successPercentage;
             console.log(totalSuccess, totalAttempts);
 
+            //donnnées pour graphique
             const data = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -30,8 +32,8 @@ const userController = {
                 }]
             };
 
+            //on récupère toutes les figures
             const trick = await Trick.findAll({ where: { confirme: 1 }, include: [Level], raw: true });
-            console.log(trick)
             res.status(200).render('mesStats', { user: req.user, pieChartData: JSON.stringify(data), totalAttempts, tricks: trick });
         } catch (error) {
             console.error(error);
@@ -53,6 +55,7 @@ const userController = {
 
             }
 
+            //données du grpahique
             const data = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -61,15 +64,14 @@ const userController = {
                 }]
             };
 
+            //classement de l'utilisateur
             let userRank = await Stat.count({
                 where: {
                     id_trick: req.params.trickId,
                     nb_reussites: { [Op.gt]: stat.nb_reussites }
                 }
             });
-
             userRank++;
-
             const totalUsers = await User.count();
 
 
@@ -86,6 +88,7 @@ const userController = {
             const successPercentage = totalAttempts !== 0 ? (totalSuccess / totalAttempts) * 100 : 0;
             const failurePercentage = 100 - successPercentage;
 
+            //données du graphique
             const data2 = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -103,7 +106,6 @@ const userController = {
                     ['nb_reussites', 'DESC']
                 ], include: [User], raw: true
             });
-            console.log(bestUserStatId);
 
             res.status(200).render('detailStatUser', { user: req.user, stat: stat, statsGlobal: statsGlobal, userRank, totalUsers, totalAttempts, totalSuccess, bestUserStatId, pieChartData: JSON.stringify(data), pieChartData2: JSON.stringify(data2) });
         } catch (error) {
@@ -127,6 +129,7 @@ const userController = {
 
             }
 
+            //données du graphique
             const data = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -135,17 +138,15 @@ const userController = {
                 }]
             };
 
+            //classmeent du joueur
             let userRank = await Stat.count({
                 where: {
                     id_trick: req.params.trickId,
                     nb_reussites: { [Op.gt]: stat.nb_reussites }
                 }
             });
-
             userRank++;
-
             const totalUsers = await User.count();
-
 
             //Partie statistique globale
             const statsGlobal = await Stat.findAll({ where: { id_trick: req.params.trickId } });
@@ -160,6 +161,7 @@ const userController = {
             const successPercentage = totalAttempts !== 0 ? (totalSuccess / totalAttempts) * 100 : 0;
             const failurePercentage = 100 - successPercentage;
 
+            //données du graphique
             const data2 = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -177,7 +179,6 @@ const userController = {
                     ['nb_reussites', 'DESC']
                 ], include: [User], raw: true
             });
-            console.log(bestUserStatId);
 
             res.status(200).render('mesStatsDetail', { user: req.user, stat: stat, statsGlobal: statsGlobal, userRank, totalUsers, totalAttempts, totalSuccess, bestUserStatId, pieChartData: JSON.stringify(data), pieChartData2: JSON.stringify(data2) });
         } catch (error) {
@@ -186,6 +187,7 @@ const userController = {
     },
 
     resetStatById: async (req, res) => {
+        //fonction pour réinitialer les statistique de la figure de l'utilisateur connecté
         try {
             const stat = await Stat.findOne({ where: { id_trick: req.params.trickId, id_user: req.user.userId } });
             stat.nb_tentatives = 0,

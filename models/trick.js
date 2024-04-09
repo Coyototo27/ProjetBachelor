@@ -3,7 +3,7 @@ const db = require('../database/connexion');
 const Level = require('./level');
 const User = require('./user');
 
-
+//modèle trick dans la BDD
 const Trick = db.sequelize.define('trick', {
     id: {
         type: Sequelize.INTEGER,

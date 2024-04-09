@@ -14,12 +14,15 @@ const jwt = require('jsonwebtoken');
 const userController = {
 
   createUser: async (req, res) => {
+    //fonction pour créer un utilisateur
     try {
+      //condition si il y a une erreur dans le formulaire
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).render('register', { errors: errors.array(), user: null });
       }
 
+      //on hashe le mot de passe
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
       const newUser = await User.create({
@@ -29,6 +32,7 @@ const userController = {
         password: hashedPassword
       });
 
+      //données du tokenJWT
       const tokenData = {
         userId: newUser.id,
         nom: newUser.nom,
@@ -36,12 +40,11 @@ const userController = {
         email: newUser.email,
       };
 
+      //on créé et stock le tokenJWT
       const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
       res.cookie('token', token, { httpOnly: true });
 
       res.status(201).redirect('/');
-
-      console.log(newUser)
     } catch (error) {
       console.error(error);
       res.status(500).send('Erreur lors de l\'enregistrement de l\'utilisateur.');
@@ -49,20 +52,23 @@ const userController = {
   },
 
   login: async (req, res) => {
+    //fonciton pour se connecter
     try {
-
       const user = await User.findOne({ where: { email: req.body.email } });
 
+      //condition si aucun utilisateur existe
       if (!user) {
         return res.status(401).render('login', { error: 'Adresse e-mail ou mot de passe incorrect.', user: null });
       }
 
+      //on vérifie le mot de passe en le comparant
       const verifyPassword = await bcrypt.compare(req.body.password, user.password);
 
       if (!verifyPassword) {
         return res.status(401).render('login', { error: 'Adresse e-mail ou mot de passe incorrect.', user: null });
       }
 
+      //données du tokenJWT
       const tokenData = {
         userId: user.id,
         nom: user.nom,
@@ -70,8 +76,9 @@ const userController = {
         email: user.email,
         admin: user.admin
       };
-      const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
 
+      //on créé et stock le tokenJWT
+      const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
       res.cookie('token', token, { httpOnly: true });
 
       res.status(201).redirect('/');
@@ -83,11 +90,14 @@ const userController = {
   },
 
   logout: (req, res) => {
+    //fonciton pour le déconnecter
+    //on supprime le tokenJWT
     res.clearCookie('token');
     res.redirect('/');
   },
 
   getAllUser: async (req, res) => {
+    //fonction pour obtenir tous les utilisateurs, sauf l'admin
     try {
       const user = await User.findAll({ where: { admin: 0 }, raw: true });
       console.log(user);
@@ -99,6 +109,7 @@ const userController = {
   },
 
   getUserById: async (req, res) => {
+    //fonction pour obtenir son utilisateur selon l'id en paramètre
     try {
       const userDetails = await User.findByPk(req.params.userId, { raw: true });
       const trick = await Trick.findAll({ where: { confirme: 1 }, include: [Level], raw: true });
@@ -110,6 +121,7 @@ const userController = {
   },
 
   deleteUser: async (req, res) => {
+    //fonction pour supprimer un utilisateur (admin)
     try {
       const user = await User.findByPk(req.params.userId);
       const admin = await User.findOne({ where: { admin: 1 }, raw: true });
@@ -123,11 +135,16 @@ const userController = {
   },
 
   deleteAccount: async (req, res) => {
+    //fonction pour supprimer le compte de l'utilisateur connecté
     try {
       const user = await User.findByPk(req.user.userId);
       const admin = await User.findOne({ where: { admin: 1 }, raw: true });
+
+      //on vient attribuer toues les figure de l'utilisateur à l'admin avant que le compte soit supprimé
       const trick = await Trick.update({ id_user: admin.id }, { where: { id_user: user.id }, raw: true });
       console.log(trick);
+
+      //on supprime le token
       res.clearCookie('token');
       await user.destroy();
       res.redirect('/');
@@ -137,14 +154,15 @@ const userController = {
   },
 
   updateUser: async (req, res) => {
+    //fonction pour modifier les informations de son compte
     try {
       const errors = validationResult(req);
+      //condition si il y a une erreur dans le formulaire
       if (!errors.isEmpty()) {
         return res.status(400).render('myaccount', { errors: errors.array(), user: req.user });
       }
       const userId = req.user.userId;
 
-      console.log(userId, req.body.nomUser, req.body.prenomUser, req.body.emailUser);
       const userToUpdate = await User.findByPk(userId);
       console.log(userToUpdate);
       if (!userToUpdate) {
@@ -159,6 +177,7 @@ const userController = {
 
       console.log("Utilisateur mis à jour :", userToUpdate);
 
+      //nouvelle données de l'utilisateur dans le token
       const tokenData = {
         userId: userToUpdate.id,
         nom: userToUpdate.nom,
@@ -168,16 +187,14 @@ const userController = {
         // Ajoutez d'autres données d'utilisateur au besoin
       };
 
+      //supprime l'ancien token
       const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' }); // Vous pouvez ajuster l'expiration selon vos besoins
-
       res.clearCookie('token');
 
       // Envoyer le nouveau token dans la réponse
-      res.cookie('token', token, { httpOnly: true }); // ou res.send({ token });
+      res.cookie('token', token, { httpOnly: true });
 
       res.status(201).redirect('/');
-
-
     } catch (error) {
       console.error(error);
       res.status(500).send('Erreur lors de l\'enregistrement de la l\'utilisateur.');
@@ -185,6 +202,7 @@ const userController = {
   },
 
   getAccount: async (req, res) => {
+    //fonction pour obtenir la page mon compte
     try {
       const trick = await Trick.findAll({ where: { id_user: req.user.userId }, include: [Level], raw: true });
       console.log(trick);

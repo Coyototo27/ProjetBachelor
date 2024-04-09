@@ -7,6 +7,7 @@ const sequelize = new Sequelize("projetBachelor", "root", "", {
 
 module.exports = {
     connexion: async () => {
+        //connection à la base de données
         try {
             await sequelize.authenticate();
             console.log('Connection has been established succesfully.');

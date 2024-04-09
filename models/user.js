@@ -1,7 +1,7 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const db = require('../database/connexion');
 
-
+//modèle user dans la BDD
 const User = db.sequelize.define('user', {
     id: {
         type: Sequelize.INTEGER,

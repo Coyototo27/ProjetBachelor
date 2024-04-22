@@ -4,7 +4,7 @@
   "description": "Projet Bachelor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "author": "",
@@ -25,5 +25,8 @@
     "nodemailer": "^6.9.13",
     "nodemon": "^3.0.3",
     "sequelize": "^6.36.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

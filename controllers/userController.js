@@ -1,93 +1,88 @@
 const User = require('../models/user');
 const Trick = require('../models/trick');
-const Stat = require('../models/stat');
 const Level = require('../models/level');
 const { Op } = require('sequelize');
-
-
-
 
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const userController = {
-
   createUser: async (req, res) => {
-    //fonction pour créer un utilisateur
     try {
-      //condition si il y a une erreur dans le formulaire
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).render('register', { errors: errors.array(), user: null });
+        const { nom, prenom, email } = req.body;
+        console.log("je passe par ici");
+
+        return res.status(400).render('register', { errors: errors.array(), user: null, visiteur: { nom, prenom, email } });
+      } else {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        console.log("je passe par là");
+        const newUser = await User.create({
+          nom: req.body.nom,
+          prenom: req.body.prenom,
+          email: req.body.email,
+          password: hashedPassword
+        });
+
+        const tokenData = {
+          userId: newUser.id,
+          nom: newUser.nom,
+          prenom: newUser.prenom,
+          email: newUser.email,
+        };
+
+        const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
+        res.cookie('token', token, { httpOnly: true });
+
+        return res.status(201).redirect('/');
       }
-
-      //on hashe le mot de passe
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-      const newUser = await User.create({
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        email: req.body.email,
-        password: hashedPassword
-      });
-
-      //données du tokenJWT
-      const tokenData = {
-        userId: newUser.id,
-        nom: newUser.nom,
-        prenom: newUser.prenom,
-        email: newUser.email,
-      };
-
-      //on créé et stock le tokenJWT
-      const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
-      res.cookie('token', token, { httpOnly: true });
-
-      res.status(201).redirect('/');
     } catch (error) {
       console.error(error);
-      res.status(500).send('Erreur lors de l\'enregistrement de l\'utilisateur.');
+      return res.status(500).send('Erreur lors de l\'enregistrement de l\'utilisateur.');
     }
   },
+
+
 
   login: async (req, res) => {
-    //fonciton pour se connecter
     try {
       const user = await User.findOne({ where: { email: req.body.email } });
-
-      //condition si aucun utilisateur existe
+  
       if (!user) {
-        return res.status(401).render('login', { error: 'Adresse e-mail ou mot de passe incorrect.', user: null });
+        return res.status(401).render('login', { error: 'Cet utilisateur n\'existe pas', user: null });
       }
-
-      //on vérifie le mot de passe en le comparant
+  
       const verifyPassword = await bcrypt.compare(req.body.password, user.password);
-
+  
       if (!verifyPassword) {
-        return res.status(401).render('login', { error: 'Adresse e-mail ou mot de passe incorrect.', user: null });
+        const { email } = req.body;
+        return res.status(401).render('login', { error: 'Adresse e-mail ou mot de passe incorrect.', user: null, visiteur: { email } });
+      } else {
+        const tokenData = {
+          userId: user.id,
+          nom: user.nom,
+          prenom: user.prenom,
+          email: user.email,
+          admin: user.admin
+        };
+  
+        const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
+        res.cookie('token', token, { httpOnly: true });
+  
+        // Enlevez le log et renvoyez le bon statut 201
+        return res.status(200).redirect('/');
       }
-
-      //données du tokenJWT
-      const tokenData = {
-        userId: user.id,
-        nom: user.nom,
-        prenom: user.prenom,
-        email: user.email,
-        admin: user.admin
-      };
-
-      //on créé et stock le tokenJWT
-      const token = jwt.sign(tokenData, 'votre_secret', { expiresIn: '1h' });
-      res.cookie('token', token, { httpOnly: true });
-
-      res.status(201).redirect('/');
-      console.log(user, token);
+  
     } catch (error) {
       console.error(error);
-      res.status(500).send('Erreur lors de la connexion.');
+      // Enlevez le log et renvoyez le bon statut 500
+      return res.status(500).send('Erreur lors de la connexion.');
     }
   },
+  
 
   logout: (req, res) => {
     //fonciton pour le déconnecter

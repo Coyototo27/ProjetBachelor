@@ -45,6 +45,13 @@ const Trick = db.sequelize.define('trick', {
     timestamps: false
 });
 
+Trick.belongsTo(User, {
+    foreignKey: 'id_user',
+});
+
+User.hasMany(Trick, {
+    foreignKey: 'id_user',
+});
 
 Trick.belongsTo(Level, {
     foreignKey: 'id_level'
@@ -54,12 +61,8 @@ Level.hasMany(Trick, {
     foreignKey: 'id_level'
 });
 
-Trick.belongsTo(User, {
-    foreignKey: 'id_user'
-});
 
-User.hasMany(Trick, {
-    foreignKey: 'id_user'
-});
+
+
 
 module.exports = Trick;

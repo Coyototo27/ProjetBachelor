@@ -1,6 +1,7 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const db = require('../database/connexion');
 
+
 //modèle user dans la BDD
 const User = db.sequelize.define('user', {
     id: {
@@ -29,12 +30,5 @@ const User = db.sequelize.define('user', {
     tableName: 'user',
     timestamps: false
 });
-
-
-// Trick.belongsTo(Niveau, { 
-//     foreignKey: 'id_niveau' });
-
-// Niveau.hasMany(Trick, { 
-//     foreignKey: 'id_niveau' });
 
 module.exports = User;

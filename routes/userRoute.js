@@ -8,13 +8,13 @@ const verifyToken = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 
 router.get('/login', (req, res) => {
-    res.render('login', { user: req.user });
+    res.render('login', { user: req.user, visiteur: null  });
 });
 
 router.post('/login', userController.login);
 
 router.get('/register', (req, res) => {
-    res.render('register', { user: req.user });
+    res.render('register', { user: req.user, visiteur: null });
 });
 
 router.post('/register', [

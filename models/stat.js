@@ -43,11 +43,11 @@ const Stat = db.sequelize.define('stat', {
 
 
 Stat.belongsTo(Trick, {
-    foreignKey: 'id_trick'
+    foreignKey: 'id_trick',
 });
 
 Trick.hasMany(Stat, {
-    foreignKey: 'id_trick'
+    foreignKey: 'id_trick',
 });
 
 Stat.belongsTo(User, {

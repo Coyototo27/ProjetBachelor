@@ -31,7 +31,7 @@ async function envoyerMail(destinataire, sujet, corps) {
         console.log('Email envoyé: ' + info.response);
     } catch (error) {
         console.error('Erreur lors de l\'envoi de l\'email:', error);
-        throw error; // Propager l'erreur pour la gérer dans la fonction appelante
+        throw error;
     }
 }
 

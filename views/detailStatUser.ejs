@@ -20,7 +20,7 @@
             </h1>
             <div class="row mt-5">
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card custom-card">
                         <img class="card-img-top mx-auto"
                             src="data:image/jpeg;base64, <%= stat['trick.image'].toString('base64') %>"
                             alt="Image de la figure" style="width: 300px; object-fit: cover;">
@@ -38,8 +38,8 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
-                        <div class="text-center"> <!-- Ajout de la classe text-center -->
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center">
                             <h5>Tentatives : <%= stat.nb_tentatives %> fois</h5>
                             <h5>Réussi : <%= stat.nb_reussites %> fois</h5>
                             <h5>Echec : <%= stat.nb_echecs %> fois</h5>
@@ -69,15 +69,15 @@
                                 type: 'pie',
                                 data: <%- pieChartData2 %>,
                                 options: {
-                                    maintainAspectRatio: false, // Désactive le maintien du rapport d'aspect
-                                    responsive: true // Rend le graphique responsive
+                                    maintainAspectRatio: false,
+                                    responsive: true 
                                 }
                             });
                         </script>
                     </div>
                     <div class="col-md-4">
-                        <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
-                            <div class="text-center"> <!-- Ajout de la classe text-center -->
+                        <div class="d-flex align-items-center justify-content-center h-100"> 
+                            <div class="text-center"> 
                                 <h5>Figure effectué au total : <%= totalAttempts %></h5>
                                 <h5>Figure réussi au total : <%= totalSuccess %></h5>
                                 <h5>Figure échoué au total : <%= totalAttempts-totalSuccess %></h5>
@@ -85,8 +85,8 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="d-flex align-items-center justify-content-center h-100"> <!-- Ajout des classes -->
-                            <div class="text-center"> <!-- Ajout de la classe text-center -->
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
                                 <h5>Meilleur utilisateur : <%= bestUserStatId['user.prenom'] + ' ' + bestUserStatId['user.nom']%></h5>
                             </div>
                         </div>
@@ -94,8 +94,6 @@
                 </div>
             </div>
         </div>
-
+        <%- include('./partials/footer.ejs') %>
 </body>
-
-
 </html>

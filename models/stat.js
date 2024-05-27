@@ -41,7 +41,6 @@ const Stat = db.sequelize.define('stat', {
     timestamps: false
 });
 
-
 Stat.belongsTo(Trick, {
     foreignKey: 'id_trick',
 });

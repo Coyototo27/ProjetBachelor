@@ -55,7 +55,7 @@ const userController = {
 
             }
 
-            //données du grpahique
+            //données du graphique
             const data = {
                 labels: ['Réussites', 'Échecs'],
                 datasets: [{
@@ -138,7 +138,7 @@ const userController = {
                 }]
             };
 
-            //classmeent du joueur
+            //classemeent du joueur
             let userRank = await Stat.count({
                 where: {
                     id_trick: req.params.trickId,

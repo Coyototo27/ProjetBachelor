@@ -177,7 +177,6 @@ describe('Test de la fonction login du UserController', () => {
                 password: 'Azerty123',
             },
         };
-
         // Mock de la fonction User.findOne pour simuler un utilisateur inexistant
         User.findOne = jest.fn().mockResolvedValue(null);
 

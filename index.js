@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
-
+const port = process.env.PORT || 3000;
 //connexion à la BDD
 const db = require('./database/connexion');
 db.connexion();
@@ -29,4 +29,4 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //le server ecoute sur
-app.listen(3000, () => console.log('Server started: 3000'));
+app.listen(port, () => console.log('Server started: 3000'));

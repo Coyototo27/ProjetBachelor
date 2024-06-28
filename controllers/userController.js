@@ -50,9 +50,9 @@ const userController = {
   login: async (req, res) => {
     try {
       const user = await User.findOne({ where: { email: req.body.email } });
-  
+      console.log(user);
       if (!user) {
-        return res.status(401).render('login', { error: 'Cet utilisateur n\'existe pas', user: null });
+        return res.status(401).render('login', { error: 'Cet utilisateur n\'existe pas', user: null, visiteur: null });
       }
   
       const verifyPassword = await bcrypt.compare(req.body.password, user.password);

@@ -232,7 +232,6 @@ const trickController = {
             }
             //condition si il y a les deux
             if (trick && req.user) {
-
                 let stats = await Stat.findOne({ where: { id_user: req.user.userId, id_trick: trick.id }, raw: true });
                 if (!stats) {
                     stats = await Stat.create({
@@ -251,7 +250,6 @@ const trickController = {
                         backgroundColor: ['#190482', '#DC3545']
                     }]
                 };
-
                 res.status(200).render('play', { user: req.user, trick: trick, levels: level, pieChartData: JSON.stringify(data), stats: stats , alertMessage: null });
             }
 

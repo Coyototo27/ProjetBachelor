@@ -4,7 +4,6 @@ const verifyAdmin = (req, res, next) => {
       console.log('Utilisateur non connecté');
       return res.status(401).json({ message: 'Vous devez être connecté pour accéder à cette ressource.' });
     }
-  
     // Vérifie si l'utilisateur est un administrateur
     if (!req.user.admin) {
       console.log('L\'utilisateur n\'est pas un administrateur');

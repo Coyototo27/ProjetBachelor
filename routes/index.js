@@ -17,4 +17,8 @@ router.post('/play/:statId/failure', verifyToken, trickController.trickFailure);
 
 router.post('/play/:statId/success', verifyToken, trickController.trickSuccess);
 
+router.get('/conditions-utilisation', verifyToken, (req, res) => {
+  res.render('conditionsUtilisation', { user: req.user });
+});
+
 module.exports = router;
